@@ -3,7 +3,7 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "prefix" {
+variable "environment" {
   description = "A prefix used for naming resources (usually the VPC name or project name)."
   type        = string
 }

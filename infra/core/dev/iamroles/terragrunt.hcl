@@ -1,8 +1,6 @@
-
 include "root" {
   path = find_in_parent_folders("root.hcl")
 }
-
 
 locals {
   root_config_path = find_in_parent_folders("root.hcl")
@@ -18,21 +16,12 @@ locals {
     "undefined"
   )
 }
-dependency "vpc" {
-  config_path = "../vpc"
-  mock_outputs_allowed_terraform_commands = ["init", "validate", "plan", "import", "terragrunt-info"]
-  mock_outputs = {
-    vpc_id = "vpc-00000000000000000"
-  }
-}
-
 
 terraform {
-  source = "../../../../modules/securitygroups"
+  source = "../../../../modules/iamroles"
 }
 
 inputs = {
-  vpc_id = dependency.vpc.outputs.vpc_id
   environment = "${local.environment}"
   tags = merge(local.parent_config.locals.common_tags, {
 

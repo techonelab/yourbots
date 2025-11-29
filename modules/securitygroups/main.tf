@@ -5,12 +5,12 @@ terraform {
 
 # Public ALB
 resource "aws_security_group" "public_alb" {
-  name        = "${var.prefix}-public-alb-sg"
+  name        = "${var.environment}-public-alb-sg"
   description = "Allows all incoming HTTP/HTTPS traffic from the internet"
   vpc_id      = var.vpc_id
 
   tags = merge(var.tags, {
-    Name = "${var.prefix}-public-alb-sg"
+    Name = "${var.environment}-public-alb-sg"
   })
 }
 
@@ -47,12 +47,12 @@ resource "aws_security_group_rule" "public_alb_egress" {
 
 # Private ALB
 resource "aws_security_group" "private_alb" {
-  name        = "${var.prefix}-private-alb-sg"
+  name        = "${var.environment}-private-alb-sg"
   description = "Allows incoming traffic ONLY from the Public ALB Security Group."
   vpc_id      = var.vpc_id
 
   tags = merge(var.tags, {
-    Name = "${var.prefix}-private-alb-sg"
+    Name = "${var.environment}-private-alb-sg"
   })
 }
 
