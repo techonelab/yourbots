@@ -17,11 +17,34 @@ locals {
   )
 }
 
+dependency "vpc" {
+  config_path = "../vpc"
+  mock_outputs_allowed_terraform_commands = ["init", "validate", "plan", "import", "terragrunt-info"]
+  mock_outputs = {
+    public_subnet_ids    = ["subnet-public-1", "subnet-public-2"]
+    private_subnet_ids   = ["subnet-private-1", "subnet-private-2"]
+  }
+}
+
+dependency "security_groups" {
+  config_path = "../security-groups"
+  mock_outputs_allowed_terraform_commands = ["init", "validate", "plan", "import", "terragrunt-info"]
+  mock_outputs = {
+    public_alb_sg_id  = "sg-ec2-public"
+    private_alb_sg_id = "sg-ec2-private"
+  }
+}
+
 terraform {
   source = "../../../../modules/ec2"
 }
 
 inputs = {
+  public_subnet_ids  = dependency.vpc.outputs.public_subnet_ids
+  private_subnet_ids = dependency.vpc.outputs.private_subnet_ids
+  public_sg_id       = dependency.securitygroups.outputs.public_ec2_sg_id
+  private_sg_id      = dependency.securitygroups.outputs.private_ec2_sg_id 
+  key_pair_name      = "your-ssh-key-name"
   environment = "${local.environment}"
   tags = merge(local.parent_config.locals.common_tags, {
 
