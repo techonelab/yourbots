@@ -1,7 +1,7 @@
 remote_state {
   backend = "s3"
   config = {
-    bucket         = "<your-bucket>-terraform-state"
+    bucket         = "<name-of-your-bucket>"
     key            = "${path_relative_to_include()}/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = true
@@ -36,8 +36,9 @@ locals {
     "qa"  = "qa"
     "dev" = "development"
   }
-  project_name = <your-project-name>
-
+  project_name = "executive-bot"
+  region = "us-east-1"
+  azs             = ["us-east-1a", "us-east-1b"]
   common_tags = {
     Project     = local.project_name
     ManagedBy   = "Terragrunt"

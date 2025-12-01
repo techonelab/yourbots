@@ -30,7 +30,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true 
 
   tags = merge(var.tags, {
-    Name = "${var.vpc_name}-public-${count.index + 1}"
+    Name = "${var.vpc_name}-public-${var.azs[count.index]}"
     Tier = "Public"
   })
 }
@@ -43,7 +43,7 @@ resource "aws_subnet" "private" {
   availability_zone = var.azs[count.index]
 
   tags = merge(var.tags, {
-    Name = "${var.vpc_name}-private-${count.index + 1}"
+    Name = "${var.vpc_name}-private-${var.azs[count.index]}"
     Tier = "Private"
   })
 }
@@ -54,7 +54,7 @@ resource "aws_eip" "nat" {
   count = length(var.public_subnets)
   
   tags = {
-    Name = "${var.vpc_name}-nat-eip-${count.index + 1}"
+    Name = "${var.vpc_name}-nat-eip-${var.azs[count.index]}"
   }
 }
 
@@ -65,7 +65,7 @@ resource "aws_nat_gateway" "nat" {
   subnet_id     = aws_subnet.public[count.index].id 
   
   tags = {
-    Name = "${var.vpc_name}-nat-gw-${count.index + 1}"
+    Name = "${var.vpc_name}-nat-gw-${var.azs[count.index]}"
   }
   
   depends_on = [aws_internet_gateway.gw]
@@ -101,7 +101,7 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
   
   tags = {
-    Name = "${var.vpc_name}-private-rt-${count.index + 1}"
+    Name = "${var.vpc_name}-private-rt-${var.azs[count.index]}"
   }
 }
 

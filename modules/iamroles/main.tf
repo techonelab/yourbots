@@ -4,7 +4,7 @@ terraform {
 
 # ECS EXEC ROLE
 resource "aws_iam_role" "ecs_execution_role" {
-  name_prefix        = "${var.environment}-ecs-exec"
+  name_prefix        = "${var.environment}-ecs-exec-"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -28,7 +28,7 @@ resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy" {
 
 # ECS TASK ROLE
 resource "aws_iam_role" "ecs_task_role" {
-  name_prefix        = "${var.environment}-ecs-task"
+  name_prefix        = "${var.environment}-ecs-task-"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -52,7 +52,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_role_policy" {
 
 # EC2
 resource "aws_iam_role" "ssm_role" {
-  name_prefix        = "${var.environment}-ssm-ec2"
+  name_prefix        = "${var.environment}-ssm-ec2-"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -77,4 +77,5 @@ resource "aws_iam_role_policy_attachment" "ssm_policy_attachment" {
 resource "aws_iam_instance_profile" "ssm_profile" {
   name = "${var.environment}-ssm-ec2-profile"
   role = aws_iam_role.ssm_role.name
+  tags        = var.tags
 }

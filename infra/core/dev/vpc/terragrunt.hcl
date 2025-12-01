@@ -26,7 +26,7 @@ inputs = {
   cidr_block     = "10.192.168.0/22"
   public_subnets = ["10.192.168.0/24", "10.192.169.0/24"]
   private_subnets = ["10.192.170.0/24", "10.192.171.0/24"]
-  azs             = ["us-east-1a", "us-east-1b"]
+  azs             = local.parent_config.locals.azs
   tags = merge(local.parent_config.locals.common_tags, {
     Name = "main-vpc-${local.environment}"
   })

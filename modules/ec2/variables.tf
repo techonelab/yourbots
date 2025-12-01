@@ -23,3 +23,8 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "ssm_instance_profile_name" {
+  description = "IAM profile used for ec2 sampler."
+  type        = string
+}

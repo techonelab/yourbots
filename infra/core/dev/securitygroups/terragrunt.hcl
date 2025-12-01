@@ -32,9 +32,9 @@ terraform {
 }
 
 inputs = {
+  name = "sg-${local.environment}"
   vpc_id = dependency.vpc.outputs.vpc_id
-  environment = "${local.environment}"
-  tags = merge(local.parent_config.locals.common_tags, {
-
-  })
+  prefix = local.parent_config.locals.project_name
+  tags   = local.parent_config.locals.common_tags
+  azs             = local.parent_config.locals.azs
 }

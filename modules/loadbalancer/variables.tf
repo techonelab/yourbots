@@ -24,7 +24,7 @@ variable "private_alb_sg_id" {
   type        = string
 }
 
-variable "prefix" {
+variable "environment" {
   description = "A prefix used for naming resources (usually the project name)."
   type        = string
 }
@@ -33,4 +33,9 @@ variable "tags" {
   description = "A map of tags to apply to all resources."
   type        = map(string)
   default     = {}
+}
+
+variable "azs" {
+  description = "List of Availability Zones to deploy resources into."
+  type        = list(string)
 }

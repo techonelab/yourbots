@@ -15,6 +15,16 @@ dependency "vpc" {
 locals{
   root_config_path = find_in_parent_folders("root.hcl")
   parent_config = read_terragrunt_config(local.root_config_path)
+
+  current_path = get_terragrunt_dir()
+  trim = trim(local.current_path, "/")
+  part_trim = split("/", local.trim)
+  parsed = element(local.part_trim, -2)
+  environment = lookup(
+    local.parent_config.locals.env_map,
+    local.parsed,
+    "undefined"
+  ) 
 }
 
 dependency "security_groups" {
@@ -36,6 +46,7 @@ inputs = {
   private_subnet_ids   = dependency.vpc.outputs.private_subnet_ids
   public_alb_sg_id     = dependency.security_groups.outputs.public_alb_sg_id
   private_alb_sg_id    = dependency.security_groups.outputs.private_alb_sg_id
-  prefix               = local.parent_config.locals.project_name
+  environment          = local.parent_config.locals.project_name
   tags                 = local.parent_config.locals.common_tags
+  azs             = local.parent_config.locals.azs
 }

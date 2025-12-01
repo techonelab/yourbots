@@ -17,6 +17,10 @@ locals {
   )
 }
 
+terraform {
+  source = "../../../../modules/ec2"
+}
+
 dependency "vpc" {
   config_path = "../vpc"
   mock_outputs_allowed_terraform_commands = ["init", "validate", "plan", "import", "terragrunt-info"]
@@ -26,25 +30,32 @@ dependency "vpc" {
   }
 }
 
-dependency "security_groups" {
-  config_path = "../security-groups"
+dependency "securitygroups" {
+  config_path = "../securitygroups"
   mock_outputs_allowed_terraform_commands = ["init", "validate", "plan", "import", "terragrunt-info"]
   mock_outputs = {
-    public_alb_sg_id  = "sg-ec2-public"
-    private_alb_sg_id = "sg-ec2-private"
+    public_ec2_sg_id  = "sg-ec2-public"
+    private_ec2_sg_id = "sg-ec2-private"
   }
 }
 
-terraform {
-  source = "../../../../modules/ec2"
+dependency "iamroles" {
+  config_path = "../iamroles"
+  mock_outputs_allowed_terraform_commands = ["init", "validate", "plan", "import", "terragrunt-info"]
+  mock_outputs = {
+    instance_profile_name = "mock-ssm-profile"
+  }
 }
 
 inputs = {
-  public_subnet_ids  = dependency.vpc.outputs.public_subnet_ids
-  private_subnet_ids = dependency.vpc.outputs.private_subnet_ids
-  public_sg_id       = dependency.securitygroups.outputs.public_ec2_sg_id
-  private_sg_id      = dependency.securitygroups.outputs.private_ec2_sg_id 
-  key_pair_name      = "your-ssh-key-name"
+  public_subnet_ids       = dependency.vpc.outputs.public_subnet_ids
+  private_subnet_ids      = dependency.vpc.outputs.private_subnet_ids
+  # for testing purpose we are using this for now
+  public_sg_id            = dependency.securitygroups.outputs.public_alb_sg_id
+  private_sg_id           = dependency.securitygroups.outputs.private_alb_sg_id 
+  ssm_instance_profile_name = dependency.iamroles.outputs.ssm_role
+  # create this manually
+  key_pair_name           = "<your-key-pair>"
   environment = "${local.environment}"
   tags = merge(local.parent_config.locals.common_tags, {
 

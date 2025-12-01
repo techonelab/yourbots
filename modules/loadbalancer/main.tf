@@ -4,20 +4,20 @@ terraform {
 
 # Public
 resource "aws_lb" "public" {
-  name               = "${var.prefix}-public-alb"
+  name               = "${var.environment}-public-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.public_alb_sg_id]
   subnets            = var.public_subnet_ids
   
   tags = merge(var.tags, {
-    Name = "${var.prefix}-public-alb"
+    Name = "${var.environment}-public-alb"
   })
 }
 
 # Default Target Group for public ALB
 resource "aws_lb_target_group" "public_default" {
-  name        = "${var.prefix}-public-default-tg"
+  name        = "${var.environment}-public-default-tg"
   port        = 80
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
@@ -49,20 +49,20 @@ resource "aws_lb_listener" "public_http" {
 
 # Private
 resource "aws_lb" "private" {
-  name               = "${var.prefix}-private-alb"
+  name               = "${var.environment}-private-alb"
   internal           = true
   load_balancer_type = "application"
   security_groups    = [var.private_alb_sg_id]
   subnets            = var.private_subnet_ids
   
   tags = merge(var.tags, {
-    Name = "${var.prefix}-private-alb"
+    Name = "${var.environment}-private-alb"
   })
 }
 
 # Default Target Group for the Private ALB
 resource "aws_lb_target_group" "private_default" {
-  name        = "${var.prefix}-private-default-tg"
+  name        = "${var.environment}-private-default-tg"
   port        = 8080
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
